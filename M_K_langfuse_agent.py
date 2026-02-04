@@ -5,6 +5,8 @@ import time
 import re
 from datetime import datetime
 from dotenv import load_dotenv
+
+from mcp_manager.tools_manager import ToolsManager
 load_dotenv(dotenv_path=r'C:\Users\MikelKulla\Desktop\langfuse_template\.env')
 
 # MUST come before any HTTP library imports
@@ -90,14 +92,13 @@ async def main():
     # ═══════════════════════════════════════════════════════════════
     print(f"Opening persistent session for '{active_server}' server...")
     async with mcp_client.session(active_server) as session:
-        print(f"Persistent session opened - ONE process for all tool calls")
+        print(f"Persistent session opened")
 
+        tools_manager = ToolsManager(session)
         # Optional retry for native servers
         for attempt in range(2):
             try:
-                print("Loading MCP tools from persistent session...")
-                all_mcp_tools = await load_mcp_tools(session)
-                print(f"Loaded {len(all_mcp_tools)} tools")
+                safe_tools = await tools_manager.load_tools()
                 break
             except Exception as e:
                 if attempt == 0 and config["is_native"]:
@@ -105,8 +106,6 @@ async def main():
                     await asyncio.sleep(2)
                 else:
                     raise e
-
-        safe_tools = enable_error_passthrough(all_mcp_tools)
 
         llm = ChatAnthropic(
             model=os.environ["MODEL"],
