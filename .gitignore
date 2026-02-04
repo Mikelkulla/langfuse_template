@@ -1,0 +1,6 @@
+/__pycache__/
+/_archive/
+/venv/
+.env
+/executions/*
+/M_K_langfuse_agent_parallel_4_servers.py

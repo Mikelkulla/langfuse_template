@@ -65,7 +65,6 @@ langfuse_template/
         import_mcp_data.py                     #   JSON -> SQLite importer
         query_executor.py                      #   Interactive SQL query tool
     executions/                                # Output logs & JSON (git-ignored)
-    _archive/                                  # Superseded legacy scripts
 ```
 
 ### What Each File Does
